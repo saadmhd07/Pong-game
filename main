@@ -1,0 +1,45 @@
+from turtle import Screen
+from paddle import Paddle
+from ball import Ball
+import time
+from scoreboard import Scoreboard
+
+screen=Screen()
+screen.bgcolor("black")
+screen.setup(width=800,height=600)
+
+screen.tracer(0)
+r_pad=Paddle((350,0))
+l_pad=Paddle((-350,0))
+
+scoreboard = Scoreboard()
+
+ball=Ball()
+
+screen.listen()
+screen.onkey(r_pad.paddle_up,"Up")
+screen.onkey(r_pad.paddle_down,"Down")
+screen.onkey(l_pad.paddle_up,"s")
+screen.onkey(l_pad.paddle_down,"w")
+
+game_is_on = True
+while game_is_on :
+    time.sleep(ball.move_speed)
+    screen.update()
+    ball.move()
+    if abs(ball.ycor())>275 :
+        ball.bounce()
+    
+    if ball.distance(r_pad) < 50 and ball.xcor() > 320 or ball.distance(l_pad) < 50 and ball.xcor() < -320:
+        ball.move_speed *= 0.9
+        ball.bounce_pad()
+
+    if ball.xcor() > 400:
+        ball.reset_position()
+        scoreboard.l_point()
+
+    if ball.xcor() < -400:
+        ball.reset_position()
+        scoreboard.r_point()
+
+screen.exitonclick()
